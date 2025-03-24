@@ -3,6 +3,7 @@ package com.codemainlabs.book_management_api.controller;
 import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.service.AuthorService;
+import com.codemainlabs.book_management_api.service.impl.AuthorServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

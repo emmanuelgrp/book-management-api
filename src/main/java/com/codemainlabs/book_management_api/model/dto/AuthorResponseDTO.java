@@ -3,6 +3,7 @@ package com.codemainlabs.book_management_api.model.dto;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record AuthorResponseDTO(
@@ -13,5 +14,7 @@ public record AuthorResponseDTO(
         LocalDate birthDate,
         String nationality,
         boolean isAlive,
-        LocalDate deathDate
+        LocalDate deathDate,
+        List<BookResponseDTO>books,
+        String city
 ) {}

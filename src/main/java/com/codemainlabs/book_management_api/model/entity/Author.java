@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class Author {
 
     @Id
@@ -32,6 +33,8 @@ public class Author {
 
     private String nationality;
 
+    private String city;
+
     private LocalDate deathDate;
 
     @Transient
@@ -48,6 +51,7 @@ public class Author {
     public String getName() {
         return firstName + " " + lastName;
     }
+
 
 
 

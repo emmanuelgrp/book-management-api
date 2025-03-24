@@ -12,5 +12,6 @@ public record AuthorRequestDTO(
         LocalDate birthDate,
         LocalDate deathDate,
         String biography,
-        String nationality
+        String nationality,
+        String city
 ) {}

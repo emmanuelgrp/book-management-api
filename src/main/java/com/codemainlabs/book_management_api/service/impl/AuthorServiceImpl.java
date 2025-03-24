@@ -3,9 +3,12 @@ package com.codemainlabs.book_management_api.service.impl;
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
 import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Author;
+import com.codemainlabs.book_management_api.model.entity.Book;
 import com.codemainlabs.book_management_api.repository.AuthorRepository;
 import com.codemainlabs.book_management_api.service.AuthorService;
+import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final BookService bookService;
+
 
     @Override
     public List<AuthorResponseDTO> getAllAuthors() {
@@ -64,6 +69,11 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private AuthorResponseDTO convertToDto(Author author) {
+        List<BookResponseDTO> bookDtos = author.getBooks().stream()
+                .map(bookService::convertToBookDto) // Convierte cada Book en un BookResponseDTO
+                .collect(Collectors.toList());
+
+        // Devolver el AuthorResponseDTO con la lista de libros convertidos
         return AuthorResponseDTO.builder()
                 .id(author.getId())
                 .name(author.getName())
@@ -73,6 +83,8 @@ public class AuthorServiceImpl implements AuthorService {
                 .nationality(author.getNationality())
                 .isAlive(author.isAlive())
                 .deathDate(author.getDeathDate())
+                .books(bookDtos)
+                .city(author.getCity())
                 .build();
     }
 
@@ -105,6 +117,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .deathDate(requestDTO.deathDate())
                 .biography(requestDTO.biography())
                 .nationality(requestDTO.nationality())
+                .city(requestDTO.city())
                 .books(new ArrayList<>()) // Evita NullPointerException
                 .build();
     }
