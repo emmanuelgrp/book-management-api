@@ -36,9 +36,9 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    private LocalDateTime lastLogin;      // Última fecha de inicio de sesión
+    private LocalDateTime lastLogin;
 
-    private LocalDate createdAt;           // Fecha de creación de la cuenta
+    private LocalDate createdAt;
 
 
 //    private String role;                  // Rol del usuario

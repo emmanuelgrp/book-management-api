@@ -26,16 +26,29 @@ public class Author {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Book> books;
 
-    private LocalDate birthDate;          // Fecha de nacimiento
+    private LocalDate birthDate;
 
-    private String biography;             // Biografía del autor
+    private String biography;
 
-    private String nationality;           // Nacionalidad
+    private String nationality;
 
-    private LocalDate deathDate;          // Fecha de fallecimiento (si aplica)
+    private LocalDate deathDate;
 
     @Transient
-    public int getBookCount() {          // Número de libros escritos (calculado)
+    public int getBookCount() {
         return books != null ? books.size() : 0;
     }
+
+    @Transient
+    public boolean isAlive() {
+        return deathDate == null;
+    }
+
+    @Transient
+    public String getName() {
+        return firstName + " " + lastName;
+    }
+
+
+
 }

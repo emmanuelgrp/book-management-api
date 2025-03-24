@@ -30,13 +30,14 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    private LocalDate publicationDate;  // Fecha de publicación
+    private LocalDate publicationDate;
 
-    private BigDecimal price;           // Precio del libro
+    private BigDecimal price;
 
-    private String genre;               // Género o categoría del libro
+    private String genre;
 
-    private boolean available;          // Estado de disponibilidad
+    private Integer pageCount;
 
-    private Integer pageCount;          // Número de páginas
+    //private boolean available;
+
 }
