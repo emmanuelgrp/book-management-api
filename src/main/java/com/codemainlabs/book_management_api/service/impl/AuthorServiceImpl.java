@@ -83,7 +83,7 @@ public class AuthorServiceImpl implements AuthorService {
 
         // Devolver el AuthorResponseDTO con la lista de libros convertidos
         return AuthorResponseDTO.builder()
-                .id(author.getId())
+                .authorID(author.getId())
                 .name(author.getName())
                 .biography(author.getBiography())
                 .bookCount(author.getBookCount())
@@ -97,9 +97,9 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private Author convertToEntity(AuthorRequestDTO requestDTO) {
-        if (requestDTO.id() != null) {
-            return authorRepository.findById(requestDTO.id())
-                    .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + requestDTO.id()));
+        if (requestDTO.authorID() != null) {
+            return authorRepository.findById(requestDTO.authorID())
+                    .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + requestDTO.authorID()));
         }
         return createNewAuthor(requestDTO);
     }

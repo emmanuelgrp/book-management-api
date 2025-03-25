@@ -15,8 +15,7 @@ public class NullableFieldDeserializer<T> extends JsonDeserializer<NullableField
     }
 
     @Override
-    public NullableField<T> deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public NullableField<T> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         NullableField<T> result = new NullableField<>();
         JsonNode node = p.getCodec().readTree(p);
         // Si el campo está presente (aunque sea null) se asigna y se marca como presente
