@@ -1,4 +1,11 @@
 package com.codemainlabs.book_management_api.util.serializer;
 
-public class NullableFieldLocalDateDeserializer {
+import java.time.LocalDate;
+
+public class NullableFieldLocalDateDeserializer extends NullableFieldDeserializer<LocalDate> {
+    public NullableFieldLocalDateDeserializer() {
+        super(LocalDate.class);
+    }
 }
+
+

@@ -50,15 +50,23 @@ public class AuthorServiceImpl implements AuthorService {
         var author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id));
 
-        author.setFirstName(authorRequestDTO.firstName());
-        author.setLastName(authorRequestDTO.lastName());
-        author.setBirthDate(authorRequestDTO.birthDate());
-        author.setDeathDate(authorRequestDTO.deathDate());
-        author.setBiography(authorRequestDTO.biography());
-        author.setNationality(authorRequestDTO.nationality());
+        author.setFirstName(authorRequestDTO.firstName() != null ? authorRequestDTO.firstName() : author.getFirstName());
+        author.setLastName(authorRequestDTO.lastName() != null ? authorRequestDTO.lastName() : author.getLastName());
+        author.setBirthDate(authorRequestDTO.birthDate() != null ? authorRequestDTO.birthDate() : author.getBirthDate());
+
+
+        // Si el campo deathDate fue enviado en el JSON, actualiza su valor (puede ser un valor o null)
+        if (authorRequestDTO.deathDate() != null && authorRequestDTO.deathDate().isPresent()) {
+            author.setDeathDate(authorRequestDTO.deathDate().getValue());
+        }
+
+        author.setBiography(authorRequestDTO.biography() != null ? authorRequestDTO.biography() : author.getBiography());
+        author.setNationality(authorRequestDTO.nationality() != null ? authorRequestDTO.nationality() : author.getNationality());
+        author.setCity(authorRequestDTO.city() != null ? authorRequestDTO.city() : author.getCity());
 
         return Optional.of(convertToDto(authorRepository.save(author)));
     }
+
 
     @Override
     public void deleteAuthor(Long id) {
@@ -114,7 +122,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .firstName(requestDTO.firstName())
                 .lastName(requestDTO.lastName())
                 .birthDate(requestDTO.birthDate())
-                .deathDate(requestDTO.deathDate())
+                .deathDate(requestDTO.deathDate().getValue())
                 .biography(requestDTO.biography())
                 .nationality(requestDTO.nationality())
                 .city(requestDTO.city())

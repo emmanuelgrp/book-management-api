@@ -52,7 +52,4 @@ public class Author {
         return firstName + " " + lastName;
     }
 
-
-
-
 }
