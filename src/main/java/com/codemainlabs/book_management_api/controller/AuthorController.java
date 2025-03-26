@@ -24,10 +24,10 @@ public class AuthorController {
         return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
     }
 
-    // Endpoint to get a single author by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long id) {
-        Optional<AuthorResponseDTO> author = authorService.getAuthorById(id);
+    // Endpoint to get a single author by authorID
+    @GetMapping("/{authorID}")
+    public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long authorID) {
+        Optional<AuthorResponseDTO> author = authorService.getAuthorById(authorID);
         return author.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -46,17 +46,17 @@ public class AuthorController {
     }
 
     // Endpoint to update an existing author
-    @PutMapping("/{id}")
-    public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable Long id, @RequestBody AuthorRequestDTO authorRequestDTO) {
-        Optional<AuthorResponseDTO> updatedAuthor = authorService.updateAuthor(id, authorRequestDTO);
+    @PutMapping("/{authorID}")
+    public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable Long authorID, @RequestBody AuthorRequestDTO authorRequestDTO) {
+        Optional<AuthorResponseDTO> updatedAuthor = authorService.updateAuthor(authorID, authorRequestDTO);
         return updatedAuthor.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Endpoint to delete an author
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-        authorService.deleteAuthor(id);
+    @DeleteMapping("/{authorID}")
+    public ResponseEntity<Void> deleteAuthor(@PathVariable Long authorID) {
+        authorService.deleteAuthor(authorID);
         return ResponseEntity.noContent().build();
     }
 }
