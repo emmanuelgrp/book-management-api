@@ -31,19 +31,22 @@ public class AuthorController {
         return author.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Endpoint to create a single author
     @PostMapping
-    public ResponseEntity<AuthorResponseDTO> createAuthor(@RequestBody AuthorRequestDTO authorRequestDTO) {
-        AuthorResponseDTO createdAuthor = authorService.createAuthor(authorRequestDTO);
-        return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
+    public ResponseEntity<?> createAuthor (@RequestBody List<AuthorRequestDTO> authorRequestDTOs) {
+
+        Object authorResponse = (authorRequestDTOs.size() == 1)
+                ? authorService.createAuthor(authorRequestDTOs.get(0))
+                : authorService.createAuthors(authorRequestDTOs);
+
+        return new ResponseEntity<>(authorResponse, HttpStatus.CREATED);
     }
 
-    // Endpoint to create multiple authors at once
-    @PostMapping("/batch")
-    public ResponseEntity<List<AuthorResponseDTO>> createAuthors(@RequestBody List<AuthorRequestDTO> authorRequestDTOs) {
-        List<AuthorResponseDTO> createdAuthors = authorService.createAuthors(authorRequestDTOs);
-        return new ResponseEntity<>(createdAuthors, HttpStatus.CREATED);
-    }
+//    @PostMapping("/batch")
+//    public ResponseEntity<List<AuthorResponseDTO>> createAuthors(@RequestBody List<AuthorRequestDTO> authorRequestDTOs) {
+//        List<AuthorResponseDTO> createdAuthors = authorService.createAuthors(authorRequestDTOs);
+//        return new ResponseEntity<>(createdAuthors, HttpStatus.CREATED);
+//    }
+
 
     // Endpoint to update an existing author
     @PutMapping("/{authorID}")

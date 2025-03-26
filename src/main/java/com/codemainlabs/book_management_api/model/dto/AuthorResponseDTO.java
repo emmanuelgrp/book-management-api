@@ -9,12 +9,13 @@ import java.util.List;
 public record AuthorResponseDTO(
         Long authorID,
         String name,
-        String biography,
-        int bookCount,
-        LocalDate birthDate,
         String nationality,
-        boolean isAlive,
+        int bookCount,
+        List<BookResponseDTO> books,
+        LocalDate birthDate,
         LocalDate deathDate,
-        List<BookResponseDTO>books,
-        String city
+        boolean isAlive,
+        String city,
+        String biography
 ) {}
+

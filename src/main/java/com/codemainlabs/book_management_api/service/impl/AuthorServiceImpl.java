@@ -5,7 +5,6 @@ import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Author;
-import com.codemainlabs.book_management_api.model.entity.Book;
 import com.codemainlabs.book_management_api.repository.AuthorRepository;
 import com.codemainlabs.book_management_api.service.AuthorService;
 import com.codemainlabs.book_management_api.service.BookService;
