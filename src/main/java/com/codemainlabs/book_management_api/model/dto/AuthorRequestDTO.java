@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.function.Function;
 
 public record AuthorRequestDTO(
-        Long id,
+        Long authorID,
         String firstName,
         String lastName,
         LocalDate birthDate,
@@ -18,7 +18,7 @@ public record AuthorRequestDTO(
 ) {
     @JsonCreator
     public static AuthorRequestDTO fromJson(JsonNode node) {
-        Long id = getLong(node, "id");
+        Long authorID = getLong(node, "authorID");
         String firstName = getString(node, "firstName");
         String lastName = getString(node, "lastName");
         LocalDate birthDate = getLocalDate(node, "birthDate");
@@ -27,7 +27,7 @@ public record AuthorRequestDTO(
         String nationality = getString(node, "nationality");
         String city = getString(node, "city");
 
-        return new AuthorRequestDTO(id, firstName, lastName, birthDate, deathDate, biography, nationality, city);
+        return new AuthorRequestDTO(authorID, firstName, lastName, birthDate, deathDate, biography, nationality, city);
     }
 
     private static String getString(JsonNode node, String fieldName) {

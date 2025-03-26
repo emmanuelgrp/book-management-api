@@ -7,7 +7,7 @@ import java.util.List;
 
 @Builder
 public record AuthorResponseDTO(
-        Long id,
+        Long authorID,
         String name,
         String biography,
         int bookCount,
