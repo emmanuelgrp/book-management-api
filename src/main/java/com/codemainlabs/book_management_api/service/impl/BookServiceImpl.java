@@ -3,7 +3,9 @@ package com.codemainlabs.book_management_api.service.impl;
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.entity.Author;
 import com.codemainlabs.book_management_api.model.entity.Book;
+import com.codemainlabs.book_management_api.repository.AuthorRepository;
 import com.codemainlabs.book_management_api.repository.BookRepository;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+
 
     @Override
     public List<BookResponseDTO> getAllBooks() {
@@ -52,6 +56,12 @@ public class BookServiceImpl implements BookService {
         book.setPageCount(bookRequestDTO.pageCount() != null ? bookRequestDTO.pageCount() : book.getPageCount());
         book.setEditorial(bookRequestDTO.editorial() != null ? bookRequestDTO.editorial() : book.getEditorial());
 
+        if (bookRequestDTO.authorId() != null) {
+            authorRepository.findById(bookRequestDTO.authorId())
+                    .ifPresent(book::setAuthor);
+        }
+
+
         return Optional.of(convertToBookDto(bookRepository.save(book)));
     }
 
@@ -78,7 +88,7 @@ public class BookServiceImpl implements BookService {
         return BookResponseDTO.builder()
                 .bookID(book.getId())
                 .title(book.getTitle())
-                .authorName(book.getAuthor().getName())  // Assuming Author is properly set in Book entity
+                .authorName(book.getAuthor() != null ? book.getAuthor().getName() : null) // Evita NullPointerException
                 .isbn(book.getIsbn())
                 .synopsis(book.getSynopsis())
                 .publicationDate(book.getPublicationDate())
@@ -88,8 +98,12 @@ public class BookServiceImpl implements BookService {
     }
 
     private Book convertToEntity(BookRequestDTO bookRequestDTO) {
-        // Assuming Author is being set from somewhere, you would likely need to fetch it from the database by its ID
-        // The code assumes the Author is already present
+        Author author = null;
+
+        if (bookRequestDTO.authorId() != null) {
+            author = authorRepository.findById(bookRequestDTO.authorId()).orElse(null);
+        }
+
         return Book.builder()
                 .title(bookRequestDTO.title())
                 .isbn(bookRequestDTO.isbn())
@@ -98,6 +112,8 @@ public class BookServiceImpl implements BookService {
                 .genre(bookRequestDTO.genre())
                 .pageCount(bookRequestDTO.pageCount())
                 .editorial(bookRequestDTO.editorial())
+                .author(author)
                 .build();
     }
+
 }
