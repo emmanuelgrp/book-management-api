@@ -75,6 +75,18 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.deleteById(id);
     }
 
+    @Override
+    public List<AuthorResponseDTO> createAuthors(List<AuthorRequestDTO> authorRequestDTOs) {
+        var authors = authorRequestDTOs.stream()
+                .map(this::convertToEntity)
+                .collect(Collectors.toList());
+
+        return authorRepository.saveAll(authors)
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     private AuthorResponseDTO convertToDto(Author author) {
         List<BookResponseDTO> bookDtos = author.getBooks().stream()
                 .map(bookService::convertToBookDto) // Convierte cada Book en un BookResponseDTO
@@ -102,19 +114,6 @@ public class AuthorServiceImpl implements AuthorService {
         }
         return createNewAuthor(requestDTO);
     }
-
-    @Override
-    public List<AuthorResponseDTO> createAuthors(List<AuthorRequestDTO> authorRequestDTOs) {
-        var authors = authorRequestDTOs.stream()
-                .map(this::convertToEntity)
-                .collect(Collectors.toList());
-
-        return authorRepository.saveAll(authors)
-                .stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
 
     private Author createNewAuthor(AuthorRequestDTO requestDTO) {
         return Author.builder()

@@ -8,13 +8,13 @@ import java.time.LocalDate;
 
 @Builder
 public record BookResponseDTO(
-        Long id,
+        Long bookID,
         String title,
+        String authorName,
         String isbn,
         String synopsis,
-        String authorName, // Solo incluimos el nombre del autor
         LocalDate publicationDate,
-        BigDecimal price,
         String genre,
         Integer pageCount
 ) {}
+

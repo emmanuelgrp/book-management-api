@@ -32,11 +32,13 @@ public class Book {
 
     private LocalDate publicationDate;
 
-    private BigDecimal price;
+    //private BigDecimal price;
 
     private String genre;
 
     private Integer pageCount;
+
+    private String editorial;
 
     //private boolean available;
 

@@ -1,25 +1,103 @@
 package com.codemainlabs.book_management_api.service.impl;
 
+import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
+import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Book;
+import com.codemainlabs.book_management_api.repository.BookRepository;
 import com.codemainlabs.book_management_api.service.BookService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
+@AllArgsConstructor
 public class BookServiceImpl implements BookService {
 
+    private final BookRepository bookRepository;
+
     @Override
+    public List<BookResponseDTO> getAllBooks() {
+        return bookRepository.findAll().stream()
+                .map(this::convertToBookDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<BookResponseDTO> getBookById(Long bookID) {
+        return bookRepository.findById(bookID)
+                .map(this::convertToBookDto);
+    }
+
+    @Override
+    public BookResponseDTO createBook(BookRequestDTO bookRequestDTO) {
+        Book book = convertToEntity(bookRequestDTO);
+        Book savedBook = bookRepository.save(book);
+        return convertToBookDto(savedBook);
+    }
+
+    @Override
+    public Optional<BookResponseDTO> updateBook(Long bookID, BookRequestDTO bookRequestDTO) {
+        Book book = bookRepository.findById(bookID)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookID));
+
+        book.setTitle(bookRequestDTO.title() != null ? bookRequestDTO.title() : book.getTitle());
+        book.setIsbn(bookRequestDTO.isbn() != null ? bookRequestDTO.isbn() : book.getIsbn());
+        book.setSynopsis(bookRequestDTO.synopsis() != null ? bookRequestDTO.synopsis() : book.getSynopsis());
+        book.setPublicationDate(bookRequestDTO.publicationDate() != null ? bookRequestDTO.publicationDate() : book.getPublicationDate());
+        book.setGenre(bookRequestDTO.genre() != null ? bookRequestDTO.genre() : book.getGenre());
+        book.setPageCount(bookRequestDTO.pageCount() != null ? bookRequestDTO.pageCount() : book.getPageCount());
+        book.setEditorial(bookRequestDTO.editorial() != null ? bookRequestDTO.editorial() : book.getEditorial());
+
+        return Optional.of(convertToBookDto(bookRepository.save(book)));
+    }
+
+    @Override
+    public void deleteBook(Long bookID) {
+        if (!bookRepository.existsById(bookID)) {
+            throw new ResourceNotFoundException("Book not found with id: " + bookID);
+        }
+        bookRepository.deleteById(bookID);
+    }
+
+    @Override
+    public List<BookResponseDTO> createBooks(List<BookRequestDTO> bookRequestDTOs) {
+        var books = bookRequestDTOs.stream()
+                .map(this::convertToEntity)
+                .collect(Collectors.toList());
+
+        return bookRepository.saveAll(books).stream()
+                .map(this::convertToBookDto)
+                .collect(Collectors.toList());
+    }
+
     public BookResponseDTO convertToBookDto(Book book) {
         return BookResponseDTO.builder()
-                .id(book.getId())
+                .bookID(book.getId())
                 .title(book.getTitle())
+                .authorName(book.getAuthor().getName())  // Assuming Author is properly set in Book entity
                 .isbn(book.getIsbn())
                 .synopsis(book.getSynopsis())
-                .authorName(book.getAuthor().getName()) // Solo el nombre del autor para evitar recursión
                 .publicationDate(book.getPublicationDate())
-                .price(book.getPrice())
                 .genre(book.getGenre())
                 .pageCount(book.getPageCount())
+                .build();
+    }
+
+    private Book convertToEntity(BookRequestDTO bookRequestDTO) {
+        // Assuming Author is being set from somewhere, you would likely need to fetch it from the database by its ID
+        // The code assumes the Author is already present
+        return Book.builder()
+                .title(bookRequestDTO.title())
+                .isbn(bookRequestDTO.isbn())
+                .synopsis(bookRequestDTO.synopsis())
+                .publicationDate(bookRequestDTO.publicationDate())
+                .genre(bookRequestDTO.genre())
+                .pageCount(bookRequestDTO.pageCount())
+                .editorial(bookRequestDTO.editorial())
                 .build();
     }
 }

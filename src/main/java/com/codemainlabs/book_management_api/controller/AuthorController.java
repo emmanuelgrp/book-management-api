@@ -33,7 +33,6 @@ public class AuthorController {
 
     @PostMapping
     public ResponseEntity<?> createAuthor (@RequestBody List<AuthorRequestDTO> authorRequestDTOs) {
-
         Object authorResponse = (authorRequestDTOs.size() == 1)
                 ? authorService.createAuthor(authorRequestDTOs.get(0))
                 : authorService.createAuthors(authorRequestDTOs);
