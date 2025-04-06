@@ -10,11 +10,11 @@ import java.time.LocalDate;
 public record BookResponseDTO(
         Long bookID,
         String title,
-        String authorName,
         String isbn,
         String synopsis,
         LocalDate publicationDate,
         String genre,
-        Integer pageCount
+        Integer pageCount,
+        String authorName
 ) {}
 
