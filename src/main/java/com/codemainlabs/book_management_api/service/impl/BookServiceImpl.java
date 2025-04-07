@@ -1,5 +1,6 @@
 package com.codemainlabs.book_management_api.service.impl;
 
+import com.codemainlabs.book_management_api.controller.BookController;
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
 import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
@@ -10,7 +11,10 @@ import com.codemainlabs.book_management_api.repository.AuthorRepository;
 import com.codemainlabs.book_management_api.repository.BookRepository;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -58,15 +62,15 @@ public class BookServiceImpl implements BookService {
         book.setPageCount(bookRequestDTO.pageCount() != null ? bookRequestDTO.pageCount() : book.getPageCount());
         book.setEditorial(bookRequestDTO.editorial() != null ? bookRequestDTO.editorial() : book.getEditorial());
 
+        //System.out.println(bookRequestDTO.authorIds());
         if (bookRequestDTO.authorIds() != null && !bookRequestDTO.authorIds().isEmpty()) {
             List<Author> authors = bookRequestDTO.authorIds().stream()
                     .map(id -> authorRepository.findById(id)
                             .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id)))
-                    .toList();
+                    .collect(Collectors.toList());
 
             book.setAuthors(authors);
         }
-
 
         return Optional.of(convertToBookDto(bookRepository.save(book)));
     }
@@ -128,6 +132,58 @@ public class BookServiceImpl implements BookService {
                 .authors(authors)
                 .build();
     }
+
+    @Override
+    public Optional<EntityModel<BookResponseDTO>> getBookByIdWithLinks(Long id) {
+        return getBookById(id)
+                .map(book -> convertToEntityModel(book, id));
+    }
+
+    @Override
+    public List<Optional<EntityModel<BookResponseDTO>>> getAllBooksWithLinks() {
+        return getAllBooks().stream()
+                .map(book -> Optional.ofNullable(convertToEntityModel(book, book.bookID())))
+                .collect(Collectors.toList());
+    }
+
+    public EntityModel<BookResponseDTO> convertToEntityModel(BookResponseDTO bookResponseDTO, Long id) {
+        return EntityModel.of(
+                bookResponseDTO,
+                linkTo(methodOn(BookController.class).getBookById(id)).withSelfRel(),
+                // Puedes agregar más enlaces aquí según lo necesites
+                linkTo(methodOn(BookController.class).updateBook(id, null)).withRel("update").withType("PUT"),
+                linkTo(methodOn(BookController.class).deleteBook(id)).withRel("delete").withType("DELETE")
+        );
+    }
+
+    @Override
+    public Optional<EntityModel<BookResponseDTO>> createBookWithLinks(BookRequestDTO bookRequestDTO) {
+        // Primero, creamos el libro
+        BookResponseDTO createdBook = createBook(bookRequestDTO);
+
+        // Luego, envolvemos el DTO con los enlaces
+        return Optional.of(convertToEntityModel(createdBook, createdBook.bookID()));
+    }
+
+    @Override
+    public List<Optional<EntityModel<BookResponseDTO>>> createBooksWithLinks(List<BookRequestDTO> bookRequestDTOs) {
+        // Creamos todos los libros
+        List<BookResponseDTO> createdBooks = createBooks(bookRequestDTOs);
+
+        // Envolvemos cada libro con los enlaces y lo colocamos en un Optional
+        return createdBooks.stream()
+                .map(book -> Optional.of(convertToEntityModel(book, book.bookID())))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<EntityModel<BookResponseDTO>> updateBookWithLinks(Long bookID, BookRequestDTO bookRequestDTO) {
+        Optional<BookResponseDTO> updatedBook = updateBook(bookID, bookRequestDTO);
+
+        return updatedBook.map(book -> Optional.of(convertToEntityModel(book, book.bookID())))
+                .orElseGet(() -> Optional.empty());
+    }
+
 
 
 }
