@@ -1,6 +1,7 @@
 package com.codemainlabs.book_management_api.service.impl;
 
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
+import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Author;
@@ -11,6 +12,7 @@ import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,9 +58,13 @@ public class BookServiceImpl implements BookService {
         book.setPageCount(bookRequestDTO.pageCount() != null ? bookRequestDTO.pageCount() : book.getPageCount());
         book.setEditorial(bookRequestDTO.editorial() != null ? bookRequestDTO.editorial() : book.getEditorial());
 
-        if (bookRequestDTO.authorId() != null) {
-            authorRepository.findById(bookRequestDTO.authorId())
-                    .ifPresent(book::setAuthor);
+        if (bookRequestDTO.authorIds() != null && !bookRequestDTO.authorIds().isEmpty()) {
+            List<Author> authors = bookRequestDTO.authorIds().stream()
+                    .map(id -> authorRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id)))
+                    .toList();
+
+            book.setAuthors(authors);
         }
 
 
@@ -88,7 +94,13 @@ public class BookServiceImpl implements BookService {
         return BookResponseDTO.builder()
                 .bookID(book.getId())
                 .title(book.getTitle())
-                .authorName(book.getAuthor() != null ? book.getAuthor().getName() : null) // Evita NullPointerException
+                .authors(
+                        Optional.ofNullable(book.getAuthors())
+                                .map(authors -> authors.stream()
+                                        .map(author -> new AuthorIDDTO(author.getId(), author.getName()))
+                                        .collect(Collectors.toList()))
+                                .orElse(List.of())
+                )
                 .isbn(book.getIsbn())
                 .synopsis(book.getSynopsis())
                 .publicationDate(book.getPublicationDate())
@@ -98,11 +110,12 @@ public class BookServiceImpl implements BookService {
     }
 
     private Book convertToEntity(BookRequestDTO bookRequestDTO) {
-        Author author = null;
-
-        if (bookRequestDTO.authorId() != null) {
-            author = authorRepository.findById(bookRequestDTO.authorId()).orElse(null);
-        }
+        List<Author> authors = (bookRequestDTO.authorIds() != null && !bookRequestDTO.authorIds().isEmpty())
+                ? bookRequestDTO.authorIds().stream()
+                .map(id -> authorRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id)))
+                .toList()
+                : Collections.emptyList();
 
         return Book.builder()
                 .title(bookRequestDTO.title())
@@ -112,8 +125,9 @@ public class BookServiceImpl implements BookService {
                 .genre(bookRequestDTO.genre())
                 .pageCount(bookRequestDTO.pageCount())
                 .editorial(bookRequestDTO.editorial())
-                .author(author)
+                .authors(authors)
                 .build();
     }
+
 
 }

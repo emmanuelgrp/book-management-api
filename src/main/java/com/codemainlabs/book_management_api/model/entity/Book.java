@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "books")
@@ -26,9 +27,14 @@ public class Book {
 
     private String synopsis;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @ManyToMany
+    @JoinTable(
+            name = "author_books",
+            joinColumns = @JoinColumn(name = "book_id"), // Foreign key in the 'author_books' table pointing to 'Book'
+            inverseJoinColumns = @JoinColumn(name = "author_id") // Foreign key in the 'author_books' table pointing to 'Author'
+    )
+    private List<Author> authors; // List of authors associated with this book
+
 
     private LocalDate publicationDate;
 

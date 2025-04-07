@@ -24,8 +24,8 @@ public class Author {
 
     private String lastName;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Book> books;
+    @ManyToMany(mappedBy = "authors") // 'authors' es el campo en Book que mapea esta relación
+    private List<Book> books; // Lista de libros asociados con este autor
 
     private LocalDate birthDate;
 

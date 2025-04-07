@@ -5,6 +5,7 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record BookResponseDTO(
@@ -15,6 +16,6 @@ public record BookResponseDTO(
         LocalDate publicationDate,
         String genre,
         Integer pageCount,
-        String authorName
+        List<AuthorIDDTO> authors
 ) {}
 
