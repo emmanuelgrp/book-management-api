@@ -1,9 +1,12 @@
 package com.codemainlabs.book_management_api.controller;
 
+import com.codemainlabs.book_management_api.assembler.BookAssembler;
+import com.codemainlabs.book_management_api.assembler.BookListModel;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,46 +21,64 @@ import java.util.Optional;
 public class BookController {
 
     private final BookService bookService;
+    private final BookAssembler bookAssembler;
 
-    // Endpoint to get all books
     @GetMapping
-    public ResponseEntity<List<Optional<EntityModel<BookResponseDTO>>>> getAllBooksWithLinks() {
-        return new ResponseEntity<>(bookService.getAllBooksWithLinks(), HttpStatus.OK);
+    public ResponseEntity<BookListModel> getAllBooks() { // Cambia el tipo de retorno aquí
+        List<BookResponseDTO> bookDTOs = bookService.getAllBooks(); // O como obtengas tus DTOs
+
+        if (bookDTOs.isEmpty()) {
+            return ResponseEntity.noContent().build(); // O devuelve un BookListModel vacío con enlaces
+        }
+
+        // Llama al NUEVO método del assembler
+        BookListModel bookListModel = bookAssembler.toBookListModel(bookDTOs);
+
+        return ResponseEntity.ok(bookListModel);
     }
 
-    // Endpoint to get a single book by bookID with HATEOAS links
+
     @GetMapping("/{bookID}")
     public ResponseEntity<EntityModel<BookResponseDTO>> getBookById(@PathVariable Long bookID) {
-        return bookService.getBookByIdWithLinks(bookID)
+        return bookService.getBookById(bookID)
+                .map(bookAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Endpoint to create a new book
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody List<BookRequestDTO> bookRequestDTOs) {
-        Object bookResponse = (bookRequestDTOs.size() == 1)
-                ? bookService.createBookWithLinks(bookRequestDTOs.get(0))
-                : bookService.createBooksWithLinks(bookRequestDTOs);
+        if (bookRequestDTOs.size() == 1) {
+            var created = bookService.createBook(bookRequestDTOs.get(0));
+            var model = bookAssembler.toModel(created);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(model);
+        }
 
-        return new ResponseEntity<>(bookResponse, HttpStatus.CREATED);
+        var createdList = bookService.createBooks(bookRequestDTOs);
+        var modelList = bookAssembler.toBookListModel(createdList);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(modelList);
     }
 
-    // Endpoint to update an existing book
     @PutMapping("/{bookID}")
-    public ResponseEntity<EntityModel<BookResponseDTO>> updateBook(@PathVariable Long bookID, @RequestBody BookRequestDTO bookRequestDTO) {
-        Optional<EntityModel<BookResponseDTO>> updatedBookWithLinks = bookService.updateBookWithLinks(bookID, bookRequestDTO);
-        return updatedBookWithLinks
+    public ResponseEntity<EntityModel<BookResponseDTO>> updateBook(
+            @PathVariable Long bookID,
+            @RequestBody BookRequestDTO bookRequestDTO) {
+
+        Optional<BookResponseDTO> updatedBook = bookService.updateBook(bookID, bookRequestDTO);
+
+        return updatedBook
+                .map(bookAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Endpoint to delete a book
     @DeleteMapping("/{bookID}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long bookID) {
         bookService.deleteBook(bookID);
         return ResponseEntity.noContent().build();
     }
 }
-
-

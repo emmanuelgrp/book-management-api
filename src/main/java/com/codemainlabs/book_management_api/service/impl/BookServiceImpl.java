@@ -133,57 +133,16 @@ public class BookServiceImpl implements BookService {
                 .build();
     }
 
-    @Override
-    public Optional<EntityModel<BookResponseDTO>> getBookByIdWithLinks(Long id) {
-        return getBookById(id)
-                .map(book -> convertToEntityModel(book, id));
-    }
-
-    @Override
-    public List<Optional<EntityModel<BookResponseDTO>>> getAllBooksWithLinks() {
-        return getAllBooks().stream()
-                .map(book -> Optional.ofNullable(convertToEntityModel(book, book.bookID())))
-                .collect(Collectors.toList());
-    }
-
-    public EntityModel<BookResponseDTO> convertToEntityModel(BookResponseDTO bookResponseDTO, Long id) {
+    /* Movido a su propia clase BookAssembler
+    public EntityModel<BookResponseDTO> convertToEntityModel(BookResponseDTO bookResponseDTO) {
         return EntityModel.of(
                 bookResponseDTO,
-                linkTo(methodOn(BookController.class).getBookById(id)).withSelfRel(),
+                linkTo(methodOn(BookController.class).getBookById(bookResponseDTO.bookID())).withSelfRel(),
                 // Puedes agregar más enlaces aquí según lo necesites
-                linkTo(methodOn(BookController.class).updateBook(id, null)).withRel("update").withType("PUT"),
-                linkTo(methodOn(BookController.class).deleteBook(id)).withRel("delete").withType("DELETE")
+                linkTo(methodOn(BookController.class).updateBook(bookResponseDTO.bookID(), null)).withRel("update").withType("PUT"),
+                linkTo(methodOn(BookController.class).deleteBook(bookResponseDTO.bookID())).withRel("delete").withType("DELETE")
         );
     }
-
-    @Override
-    public Optional<EntityModel<BookResponseDTO>> createBookWithLinks(BookRequestDTO bookRequestDTO) {
-        // Primero, creamos el libro
-        BookResponseDTO createdBook = createBook(bookRequestDTO);
-
-        // Luego, envolvemos el DTO con los enlaces
-        return Optional.of(convertToEntityModel(createdBook, createdBook.bookID()));
-    }
-
-    @Override
-    public List<Optional<EntityModel<BookResponseDTO>>> createBooksWithLinks(List<BookRequestDTO> bookRequestDTOs) {
-        // Creamos todos los libros
-        List<BookResponseDTO> createdBooks = createBooks(bookRequestDTOs);
-
-        // Envolvemos cada libro con los enlaces y lo colocamos en un Optional
-        return createdBooks.stream()
-                .map(book -> Optional.of(convertToEntityModel(book, book.bookID())))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<EntityModel<BookResponseDTO>> updateBookWithLinks(Long bookID, BookRequestDTO bookRequestDTO) {
-        Optional<BookResponseDTO> updatedBook = updateBook(bookID, bookRequestDTO);
-
-        return updatedBook.map(book -> Optional.of(convertToEntityModel(book, book.bookID())))
-                .orElseGet(() -> Optional.empty());
-    }
-
-
+    */
 
 }

@@ -18,11 +18,5 @@ public interface BookService {
     void deleteBook(Long id);
     List<BookResponseDTO> createBooks(List<BookRequestDTO> bookRequestDTOs);
     BookResponseDTO convertToBookDto(Book book);
-
-    Optional<EntityModel<BookResponseDTO>> getBookByIdWithLinks(Long id);
-    List<Optional<EntityModel<BookResponseDTO>>> getAllBooksWithLinks();
-    Optional<EntityModel<BookResponseDTO>> createBookWithLinks(BookRequestDTO bookRequestDTO);
-    List<Optional<EntityModel<BookResponseDTO>>> createBooksWithLinks(List<BookRequestDTO> bookRequestDTOs);
-    Optional<EntityModel<BookResponseDTO>> updateBookWithLinks(Long bookID, BookRequestDTO bookRequestDTO);
 }
 
