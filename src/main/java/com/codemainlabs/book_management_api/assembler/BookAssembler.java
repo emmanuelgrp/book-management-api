@@ -1,12 +1,10 @@
 package com.codemainlabs.book_management_api.assembler;
 
-// ... (otras importaciones como AuthorIdAssembler, BookController, DTOs, etc.) ...
 import com.codemainlabs.book_management_api.controller.BookController;
 import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Links; // Importa Links
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -21,19 +19,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class BookAssembler implements RepresentationModelAssembler<BookResponseDTO, EntityModel<BookRepresentation>> {
 
-    private final AuthorIdAssembler authorIdAssembler;
+    private final AuthorIDDTOAssembler authorIDDTOAssembler;
 
-    public BookAssembler(AuthorIdAssembler authorIdAssembler) {
-        this.authorIdAssembler = authorIdAssembler;
+    public BookAssembler(AuthorIDDTOAssembler authorIDDTOAssembler) {
+        this.authorIDDTOAssembler = authorIDDTOAssembler;
     }
 
     @Override
     @NonNull
     public EntityModel<BookRepresentation> toModel(@NonNull BookResponseDTO bookResponseDTO) {
-        // --- Lógica de toModel sin cambios ---
         List<EntityModel<AuthorIDDTO>> authorModels = bookResponseDTO.authors()
                 .stream()
-                .map(authorIdAssembler::toModel)
+                .map(authorIDDTOAssembler::toModel)
                 .collect(Collectors.toList());
 
         BookRepresentation bookRepresentation = new BookRepresentation(
@@ -53,28 +50,19 @@ public class BookAssembler implements RepresentationModelAssembler<BookResponseD
                 linkTo(methodOn(BookController.class).updateBook(bookResponseDTO.bookID(), null)).withRel("update").withType("PUT"),
                 linkTo(methodOn(BookController.class).deleteBook(bookResponseDTO.bookID())).withRel("delete").withType("DELETE")
         );
-        // --- Fin de lógica de toModel ---
     }
 
 
     @NonNull
     public BookListResponse toBookListResponse(@NonNull Iterable<? extends BookResponseDTO> books) {
-        // 1. Mapeo de DTOs a EntityModels (sin cambios)
         List<EntityModel<BookRepresentation>> bookEntityModels = StreamSupport.stream(books.spliterator(), false)
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        // 2. Creación de enlaces de colección (sin cambios)
         Link selfLink = linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel().withType("GET");
         Link createLink = linkTo(methodOn(BookController.class).createBook(null)).withRel("create").withType("POST");
-        // Añade más enlaces aquí si es necesario
 
-        // 3. Crea la instancia de BookListResponse pasando los EntityModels y los Links directamente
-        //    El constructor de BookListResponse ahora usa add() de RepresentationModel.
-        return new BookListResponse(bookEntityModels, selfLink, createLink); // Pasa los Link directamente
-        // O si tienes los links en una lista:
-        // List<Link> collectionLinksList = List.of(selfLink, createLink);
-        // return new BookListResponse(bookEntityModels, collectionLinksList);
+        return new BookListResponse(bookEntityModels, selfLink, createLink);
     }
 
 }

@@ -6,8 +6,6 @@ import org.springframework.hateoas.EntityModel;
 import java.time.LocalDate;
 import java.util.List;
 
-// Esta clase representa cómo se verá UN libro en la respuesta JSON final
-// Nota que 'authors' es List<EntityModel<AuthorIDDTO>>
 public record BookRepresentation(
         Long bookID,
         String title,
@@ -16,8 +14,5 @@ public record BookRepresentation(
         LocalDate publicationDate,
         String genre,
         Integer pageCount,
-        List<EntityModel<AuthorIDDTO>> authors // <-- Cambio clave aquí
-) {
-    // No necesitas @Builder aquí necesariamente,
-    // lo construiremos en el Assembler
-}
+        List<EntityModel<AuthorIDDTO>> authors
+) {}

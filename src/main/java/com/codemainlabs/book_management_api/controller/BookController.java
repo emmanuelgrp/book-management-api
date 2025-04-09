@@ -1,7 +1,6 @@
 package com.codemainlabs.book_management_api.controller;
 
 import com.codemainlabs.book_management_api.assembler.BookAssembler;
-import com.codemainlabs.book_management_api.assembler.BookListModel;
 import com.codemainlabs.book_management_api.assembler.BookListResponse;
 import com.codemainlabs.book_management_api.assembler.BookRepresentation;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
