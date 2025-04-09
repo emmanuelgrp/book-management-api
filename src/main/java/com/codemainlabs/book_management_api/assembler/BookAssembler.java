@@ -1,76 +1,80 @@
 package com.codemainlabs.book_management_api.assembler;
 
-
+// ... (otras importaciones como AuthorIdAssembler, BookController, DTOs, etc.) ...
 import com.codemainlabs.book_management_api.controller.BookController;
+import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
-import org.springframework.hateoas.CollectionModel; // Aún lo necesitarás si la interfaz lo exige
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Links; // Importa Links
 import org.springframework.hateoas.server.RepresentationModelAssembler;
-import org.springframework.stereotype.Component;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class BookAssembler implements RepresentationModelAssembler<BookResponseDTO, EntityModel<BookResponseDTO>> {
+public class BookAssembler implements RepresentationModelAssembler<BookResponseDTO, EntityModel<BookRepresentation>> {
+
+    private final AuthorIdAssembler authorIdAssembler;
+
+    public BookAssembler(AuthorIdAssembler authorIdAssembler) {
+        this.authorIdAssembler = authorIdAssembler;
+    }
 
     @Override
     @NonNull
-    public EntityModel<BookResponseDTO> toModel(@NonNull BookResponseDTO bookResponseDTO) {
-        // Este método se mantiene igual
+    public EntityModel<BookRepresentation> toModel(@NonNull BookResponseDTO bookResponseDTO) {
+        // --- Lógica de toModel sin cambios ---
+        List<EntityModel<AuthorIDDTO>> authorModels = bookResponseDTO.authors()
+                .stream()
+                .map(authorIdAssembler::toModel)
+                .collect(Collectors.toList());
+
+        BookRepresentation bookRepresentation = new BookRepresentation(
+                bookResponseDTO.bookID(),
+                bookResponseDTO.title(),
+                bookResponseDTO.isbn(),
+                bookResponseDTO.synopsis(),
+                bookResponseDTO.publicationDate(),
+                bookResponseDTO.genre(),
+                bookResponseDTO.pageCount(),
+                authorModels
+        );
+
         return EntityModel.of(
-                bookResponseDTO,
-                linkTo(methodOn(BookController.class).getBookById(bookResponseDTO.bookID())).withSelfRel(),
+                bookRepresentation,
+                linkTo(methodOn(BookController.class).getBookById(bookResponseDTO.bookID())).withSelfRel().withType("GET"),
                 linkTo(methodOn(BookController.class).updateBook(bookResponseDTO.bookID(), null)).withRel("update").withType("PUT"),
                 linkTo(methodOn(BookController.class).deleteBook(bookResponseDTO.bookID())).withRel("delete").withType("DELETE")
         );
+        // --- Fin de lógica de toModel ---
     }
 
-    /**
-     * Este método cumple con la interfaz RepresentationModelAssembler,
-     * pero NO será el que uses en tu controlador para obtener la estructura deseada.
-     * Generará la respuesta estándar con _embedded.
-     */
-    @Override
+
     @NonNull
-    public CollectionModel<EntityModel<BookResponseDTO>> toCollectionModel(@NonNull Iterable<? extends BookResponseDTO> books) {
-        List<EntityModel<BookResponseDTO>> bookModels = StreamSupport.stream(books.spliterator(), false)
+    public BookListResponse toBookListResponse(@NonNull Iterable<? extends BookResponseDTO> books) {
+        // 1. Mapeo de DTOs a EntityModels (sin cambios)
+        List<EntityModel<BookRepresentation>> bookEntityModels = StreamSupport.stream(books.spliterator(), false)
                 .map(this::toModel)
                 .collect(Collectors.toList());
 
-        // Retornamos CollectionModel estándar
-        return CollectionModel.of(
-                bookModels,
-                linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel()
-        );
+        // 2. Creación de enlaces de colección (sin cambios)
+        Link selfLink = linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel().withType("GET");
+        Link createLink = linkTo(methodOn(BookController.class).createBook(null)).withRel("create").withType("POST");
+        // Añade más enlaces aquí si es necesario
+
+        // 3. Crea la instancia de BookListResponse pasando los EntityModels y los Links directamente
+        //    El constructor de BookListResponse ahora usa add() de RepresentationModel.
+        return new BookListResponse(bookEntityModels, selfLink, createLink); // Pasa los Link directamente
+        // O si tienes los links en una lista:
+        // List<Link> collectionLinksList = List.of(selfLink, createLink);
+        // return new BookListResponse(bookEntityModels, collectionLinksList);
     }
 
-    /**
-     * NUEVO MÉTODO: Crea y devuelve el modelo de lista personalizado sin "_embedded".
-     * Usa este método en tu controlador.
-     * @param books Iterable de DTOs de libros.
-     * @return Un BookListModel con la lista bajo la clave 'books' y enlaces de colección.
-     */
-    @NonNull
-    public BookListModel toBookListModel(@NonNull Iterable<? extends BookResponseDTO> books) {
-        // 1. Convierte cada DTO a EntityModel (reutiliza toModel)
-        List<EntityModel<BookResponseDTO>> bookEntityModels = StreamSupport.stream(books.spliterator(), false)
-                .map(this::toModel) // Llama al método toModel existente para cada libro
-                .collect(Collectors.toList());
-
-        // 2. Crea una instancia de tu modelo personalizado
-        BookListModel bookListModel = new BookListModel(bookEntityModels);
-
-        // 3. Añade los enlaces a nivel de colección a tu modelo personalizado
-        bookListModel.add(linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel());
-        // Puedes añadir más enlaces aquí si son necesarios para la colección
-        // bookListModel.add(linkTo(methodOn(BookController.class).createBook(null)).withRel("create").withType("POST"));
-
-        // 4. Devuelve el modelo personalizado
-        return bookListModel;
-    }
 }

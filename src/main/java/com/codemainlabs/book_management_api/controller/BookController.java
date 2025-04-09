@@ -2,6 +2,8 @@ package com.codemainlabs.book_management_api.controller;
 
 import com.codemainlabs.book_management_api.assembler.BookAssembler;
 import com.codemainlabs.book_management_api.assembler.BookListModel;
+import com.codemainlabs.book_management_api.assembler.BookListResponse;
+import com.codemainlabs.book_management_api.assembler.BookRepresentation;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.service.BookService;
@@ -24,22 +26,16 @@ public class BookController {
     private final BookAssembler bookAssembler;
 
     @GetMapping
-    public ResponseEntity<BookListModel> getAllBooks() { // Cambia el tipo de retorno aquí
-        List<BookResponseDTO> bookDTOs = bookService.getAllBooks(); // O como obtengas tus DTOs
-
-        if (bookDTOs.isEmpty()) {
-            return ResponseEntity.noContent().build(); // O devuelve un BookListModel vacío con enlaces
-        }
-
-        // Llama al NUEVO método del assembler
-        BookListModel bookListModel = bookAssembler.toBookListModel(bookDTOs);
-
-        return ResponseEntity.ok(bookListModel);
+    public ResponseEntity<BookListResponse> getAllBooks() { // <-- Tipo de retorno cambiado
+        List<BookResponseDTO> bookDTOs = bookService.getAllBooks(); // Obtiene lista de DTOs
+        // Convierte la lista de DTOs a CollectionModel usando el assembler
+        BookListResponse collectionModel = bookAssembler.toBookListResponse(bookDTOs);
+        return ResponseEntity.ok(collectionModel);
     }
 
 
     @GetMapping("/{bookID}")
-    public ResponseEntity<EntityModel<BookResponseDTO>> getBookById(@PathVariable Long bookID) {
+    public ResponseEntity<?> getBookById(@PathVariable Long bookID) {
         return bookService.getBookById(bookID)
                 .map(bookAssembler::toModel)
                 .map(ResponseEntity::ok)
@@ -57,14 +53,14 @@ public class BookController {
         }
 
         var createdList = bookService.createBooks(bookRequestDTOs);
-        var modelList = bookAssembler.toBookListModel(createdList);
+        var modelList = bookAssembler.toBookListResponse(createdList);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(modelList);
     }
 
     @PutMapping("/{bookID}")
-    public ResponseEntity<EntityModel<BookResponseDTO>> updateBook(
+    public ResponseEntity<?> updateBook(
             @PathVariable Long bookID,
             @RequestBody BookRequestDTO bookRequestDTO) {
 

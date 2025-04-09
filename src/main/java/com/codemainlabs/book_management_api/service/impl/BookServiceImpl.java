@@ -52,7 +52,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Optional<BookResponseDTO> updateBook(Long bookID, BookRequestDTO bookRequestDTO) {
         Book book = bookRepository.findById(bookID)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + bookID));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with authorID: " + bookID));
 
         book.setTitle(bookRequestDTO.title() != null ? bookRequestDTO.title() : book.getTitle());
         book.setIsbn(bookRequestDTO.isbn() != null ? bookRequestDTO.isbn() : book.getIsbn());
@@ -66,7 +66,7 @@ public class BookServiceImpl implements BookService {
         if (bookRequestDTO.authorIds() != null && !bookRequestDTO.authorIds().isEmpty()) {
             List<Author> authors = bookRequestDTO.authorIds().stream()
                     .map(id -> authorRepository.findById(id)
-                            .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id)))
+                            .orElseThrow(() -> new ResourceNotFoundException("Author not found with authorID: " + id)))
                     .collect(Collectors.toList());
 
             book.setAuthors(authors);
@@ -78,7 +78,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(Long bookID) {
         if (!bookRepository.existsById(bookID)) {
-            throw new ResourceNotFoundException("Book not found with id: " + bookID);
+            throw new ResourceNotFoundException("Book not found with authorID: " + bookID);
         }
         bookRepository.deleteById(bookID);
     }
@@ -117,7 +117,7 @@ public class BookServiceImpl implements BookService {
         List<Author> authors = (bookRequestDTO.authorIds() != null && !bookRequestDTO.authorIds().isEmpty())
                 ? bookRequestDTO.authorIds().stream()
                 .map(id -> authorRepository.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id)))
+                        .orElseThrow(() -> new ResourceNotFoundException("Author not found with authorID: " + id)))
                 .toList()
                 : Collections.emptyList();
 

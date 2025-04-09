@@ -47,7 +47,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Optional<AuthorResponseDTO> updateAuthor(Long id, AuthorRequestDTO authorRequestDTO) {
         var author = authorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found with authorID: " + id));
 
         author.setFirstName(authorRequestDTO.firstName() != null ? authorRequestDTO.firstName() : author.getFirstName());
         author.setLastName(authorRequestDTO.lastName() != null ? authorRequestDTO.lastName() : author.getLastName());
@@ -70,7 +70,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Author not found with id: " + id);
+            throw new ResourceNotFoundException("Author not found with authorID: " + id);
         }
         authorRepository.deleteById(id);
     }
@@ -110,7 +110,7 @@ public class AuthorServiceImpl implements AuthorService {
     private Author convertToEntity(AuthorRequestDTO requestDTO) {
         if (requestDTO.authorID() != null) {
             return authorRepository.findById(requestDTO.authorID())
-                    .orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + requestDTO.authorID()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Author not found with authorID: " + requestDTO.authorID()));
         }
         return createNewAuthor(requestDTO);
     }
