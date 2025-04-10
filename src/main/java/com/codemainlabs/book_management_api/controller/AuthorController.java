@@ -18,13 +18,11 @@ public class AuthorController {
 
     private final AuthorService authorService;
 
-    // Endpoint to get all authors
     @GetMapping
     public ResponseEntity<List<AuthorResponseDTO>> getAllAuthors() {
         return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
     }
 
-    // Endpoint to get a single author by authorID
     @GetMapping("/{authorID}")
     public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long authorID) {
         Optional<AuthorResponseDTO> author = authorService.getAuthorById(authorID);
@@ -40,14 +38,6 @@ public class AuthorController {
         return new ResponseEntity<>(authorResponse, HttpStatus.CREATED);
     }
 
-//    @PostMapping("/batch")
-//    public ResponseEntity<List<AuthorResponseDTO>> createAuthors(@RequestBody List<AuthorRequestDTO> authorRequestDTOs) {
-//        List<AuthorResponseDTO> createdAuthors = authorService.createAuthors(authorRequestDTOs);
-//        return new ResponseEntity<>(createdAuthors, HttpStatus.CREATED);
-//    }
-
-
-    // Endpoint to update an existing author
     @PutMapping("/{authorID}")
     public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable Long authorID, @RequestBody AuthorRequestDTO authorRequestDTO) {
         Optional<AuthorResponseDTO> updatedAuthor = authorService.updateAuthor(authorID, authorRequestDTO);
@@ -55,7 +45,6 @@ public class AuthorController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Endpoint to delete an author
     @DeleteMapping("/{authorID}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long authorID) {
         authorService.deleteAuthor(authorID);

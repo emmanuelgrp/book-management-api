@@ -3,7 +3,6 @@ package com.codemainlabs.book_management_api.assembler;
 import com.codemainlabs.book_management_api.controller.AuthorController;
 import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import org.springframework.lang.NonNull;
@@ -17,11 +16,9 @@ public class AuthorIDDTOAssembler implements RepresentationModelAssembler<Author
     @Override
     @NonNull
     public EntityModel<AuthorIDDTO> toModel(@NonNull AuthorIDDTO author) {
-        Link selfLink = linkTo(methodOn(AuthorController.class).getAuthorById(author.authorID())).withSelfRel().withType("GET");
-
         return EntityModel.of(
                 author,
-                selfLink
+                linkTo(methodOn(AuthorController.class).getAuthorById(author.authorID())).withSelfRel().withType("GET")
         );
     }
 }

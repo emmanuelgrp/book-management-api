@@ -3,27 +3,22 @@ package com.codemainlabs.book_management_api.assembler;
 import com.codemainlabs.book_management_api.controller.BookController;
 import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
+@AllArgsConstructor
 public class BookAssembler implements RepresentationModelAssembler<BookResponseDTO, EntityModel<BookRepresentation>> {
 
     private final AuthorIDDTOAssembler authorIDDTOAssembler;
-
-    public BookAssembler(AuthorIDDTOAssembler authorIDDTOAssembler) {
-        this.authorIDDTOAssembler = authorIDDTOAssembler;
-    }
 
     @Override
     @NonNull
@@ -33,16 +28,18 @@ public class BookAssembler implements RepresentationModelAssembler<BookResponseD
                 .map(authorIDDTOAssembler::toModel)
                 .collect(Collectors.toList());
 
-        BookRepresentation bookRepresentation = new BookRepresentation(
-                bookResponseDTO.bookID(),
-                bookResponseDTO.title(),
-                bookResponseDTO.isbn(),
-                bookResponseDTO.synopsis(),
-                bookResponseDTO.publicationDate(),
-                bookResponseDTO.genre(),
-                bookResponseDTO.pageCount(),
-                authorModels
-        );
+        // Todo Mapper for BookResponseDTO and BookRepresentation
+        BookRepresentation bookRepresentation = BookRepresentation.builder()
+                .bookID(bookResponseDTO.bookID())
+                .title(bookResponseDTO.title())
+                .isbn(bookResponseDTO.isbn())
+                .synopsis(bookResponseDTO.synopsis())
+                .publicationDate(bookResponseDTO.publicationDate())
+                .genre(bookResponseDTO.genre())
+                .pageCount(bookResponseDTO.pageCount())
+                .authors(authorModels)
+                .build();
+
 
         return EntityModel.of(
                 bookRepresentation,
@@ -55,14 +52,16 @@ public class BookAssembler implements RepresentationModelAssembler<BookResponseD
 
     @NonNull
     public BookListResponse toBookListResponse(@NonNull Iterable<? extends BookResponseDTO> books) {
-        List<EntityModel<BookRepresentation>> bookEntityModels = StreamSupport.stream(books.spliterator(), false)
+        var bookEntityModels = StreamSupport.stream(books.spliterator(), false)
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
 
-        Link selfLink = linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel().withType("GET");
-        Link createLink = linkTo(methodOn(BookController.class).createBook(null)).withRel("create").withType("POST");
-
-        return new BookListResponse(bookEntityModels, selfLink, createLink);
+        return new BookListResponse(
+                bookEntityModels,
+                linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel().withType("GET"),
+                linkTo(methodOn(BookController.class).createBook(null)).withRel("create").withType("POST")
+        );
     }
+
 
 }
