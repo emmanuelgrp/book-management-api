@@ -24,18 +24,19 @@ public class Author {
 
     private String lastName;
 
-    @ManyToMany(mappedBy = "authors") // 'authors' es el campo en Book que mapea esta relación
-    private List<Book> books; // Lista de libros asociados con este autor
+    private String nationality;
+
+    @ManyToMany(mappedBy = "authors")
+    private List<Book> books;
 
     private LocalDate birthDate;
 
-    private String biography;
-
-    private String nationality;
+    private LocalDate deathDate;
 
     private String city;
 
-    private LocalDate deathDate;
+    private String biography;
+
 
     @Transient
     public int getBookCount() {

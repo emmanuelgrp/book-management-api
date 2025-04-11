@@ -1,6 +1,7 @@
 package com.codemainlabs.book_management_api.service.impl;
 
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
+import com.codemainlabs.book_management_api.mapper.AuthorMapper;
 import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
@@ -24,6 +25,8 @@ public class AuthorServiceImpl implements AuthorService {
     private final BookService bookService;
 
 
+
+
     @Override
     public List<AuthorResponseDTO> getAllAuthors() {
         return authorRepository.findAll().stream()
@@ -39,9 +42,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorResponseDTO createAuthor(AuthorRequestDTO authorRequestDTO) {
-        Author author = convertToEntity(authorRequestDTO);
-        Author savedAuthor = authorRepository.save(author);
-        return convertToDto(savedAuthor);
+        return convertToDto(
+                authorRepository.save(
+                        convertToEntity(authorRequestDTO)
+                )
+        );
     }
 
     @Override
@@ -89,10 +94,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     private AuthorResponseDTO convertToDto(Author author) {
         List<BookResponseDTO> bookDtos = author.getBooks().stream()
-                .map(bookService::convertToBookDto) // Convierte cada Book en un BookResponseDTO
+                .map(bookService::convertToBookDto)
                 .collect(Collectors.toList());
 
-        // Devolver el AuthorResponseDTO con la lista de libros convertidos
         return AuthorResponseDTO.builder()
                 .authorID(author.getId())
                 .name(author.getName())
@@ -124,7 +128,7 @@ public class AuthorServiceImpl implements AuthorService {
                 .biography(requestDTO.biography())
                 .nationality(requestDTO.nationality())
                 .city(requestDTO.city())
-                .books(new ArrayList<>()) // Evita NullPointerException
+                .books(new ArrayList<>())
                 .build();
     }
 

@@ -30,22 +30,17 @@ public class Book {
     @ManyToMany
     @JoinTable(
             name = "author_books",
-            joinColumns = @JoinColumn(name = "book_id"), // Foreign key in the 'author_books' table pointing to 'Book'
-            inverseJoinColumns = @JoinColumn(name = "author_id") // Foreign key in the 'author_books' table pointing to 'Author'
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
     )
-    private List<Author> authors; // List of authors associated with this book
-
+    private List<Author> authors;
 
     private LocalDate publicationDate;
-
-    //private BigDecimal price;
 
     private String genre;
 
     private Integer pageCount;
 
     private String editorial;
-
-    //private boolean available;
 
 }

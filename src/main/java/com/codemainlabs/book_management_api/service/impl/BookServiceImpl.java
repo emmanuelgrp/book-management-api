@@ -1,6 +1,5 @@
 package com.codemainlabs.book_management_api.service.impl;
 
-import com.codemainlabs.book_management_api.controller.BookController;
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
 import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
@@ -11,10 +10,7 @@ import com.codemainlabs.book_management_api.repository.AuthorRepository;
 import com.codemainlabs.book_management_api.repository.BookRepository;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 
 import java.util.Collections;
 import java.util.List;
