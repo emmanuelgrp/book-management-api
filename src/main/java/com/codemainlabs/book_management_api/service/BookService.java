@@ -17,6 +17,5 @@ public interface BookService {
     Optional<BookResponseDTO> updateBook(Long id, BookRequestDTO bookRequestDTO);
     void deleteBook(Long id);
     List<BookResponseDTO> createBooks(List<BookRequestDTO> bookRequestDTOs);
-    BookResponseDTO convertToBookDto(Book book);
 }
 
