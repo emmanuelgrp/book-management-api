@@ -19,6 +19,14 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
+      - name: Crear .env.properties desde secret
+        run: |
+          echo "${{ secrets.ENV_PROPERTIES }}" > .env.properties
+
+      - name: Copiar .env.properties al VPS
+        run: |
+          scp -i ~/.ssh/id_rsa .env.properties ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/deploy/book-management-api/.env.properties
+
       - name: Deploy to VPS
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "
