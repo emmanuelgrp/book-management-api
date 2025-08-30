@@ -19,5 +19,5 @@ COPY --from=build /app/target/*.jar app.jar
 # Exponer puerto
 EXPOSE 8080
 
-# Ejecutar la app
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Ejecutar la app con perfil prod
+ENTRYPOINT ["java","-jar","/app/app.jar","--spring.profiles.active=prod"]

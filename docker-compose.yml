@@ -9,3 +9,5 @@ services:
     restart: unless-stopped
     volumes:
       - /home/deploy/book-management-api/.env.properties:/app/.env.properties:ro
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
