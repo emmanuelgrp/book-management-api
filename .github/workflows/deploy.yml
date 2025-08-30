@@ -33,5 +33,5 @@ jobs:
             cd /home/deploy/book-management-api || git clone https://github.com/emmanuelgrp/book-management-api.git /home/deploy/book-management-api
             cd /home/deploy/book-management-api
             git pull
-            docker-compose up -d --build
+            docker compose up -d --build
           "
