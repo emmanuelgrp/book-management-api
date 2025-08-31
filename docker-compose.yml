@@ -1,6 +1,6 @@
 services:
   app:
-    build: .
+    image: ghcr.io/emmanuelgrp/book-management-api:latest
     container_name: book-api
     ports:
       - "8080:8080"
