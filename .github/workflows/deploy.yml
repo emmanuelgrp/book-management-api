@@ -43,6 +43,10 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
+      - name: Crear Directorio de Despliegue Remoto
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "mkdir -p /home/deploy/book-management-api"
+
       - name: Copiar docker-compose.yml al VPS
         run: |
           scp -i ~/.ssh/id_rsa docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/deploy/book-management-api/docker-compose.yml
@@ -67,4 +71,5 @@ jobs:
             cd /home/deploy/book-management-api
             docker compose pull
             docker compose up -d
+            rm ./.env.properties
           "
