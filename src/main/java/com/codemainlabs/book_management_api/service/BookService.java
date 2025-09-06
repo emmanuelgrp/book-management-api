@@ -1,11 +1,7 @@
 package com.codemainlabs.book_management_api.service;
 
-import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
-import com.codemainlabs.book_management_api.model.entity.Book;
-import org.springframework.hateoas.EntityModel;
 
 import java.util.List;
 import java.util.Optional;
