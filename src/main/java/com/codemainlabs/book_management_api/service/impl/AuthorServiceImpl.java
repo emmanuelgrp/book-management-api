@@ -9,6 +9,9 @@ import com.codemainlabs.book_management_api.repository.AuthorRepository;
 import com.codemainlabs.book_management_api.service.AuthorService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,12 +28,14 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorMapper authorMapper;
 
     @Override
+    @Cacheable("authorsPageable")
     public Page<AuthorResponseDTO> getAllAuthors(Pageable pageable) {
         return authorRepository.findAll(pageable)
                 .map(authorMapper::toAuthorResponseDTO);
     }
 
     @Override
+    @Cacheable(value = "authors", key = "#id")
     public Optional<AuthorResponseDTO> getAuthorById(Long id) {
         return authorRepository.findById(id)
                 .map(authorMapper::toAuthorResponseDTO);
@@ -38,6 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "authorsPageable", allEntries = true)
     public AuthorResponseDTO createAuthor(AuthorRequestDTO authorRequestDTO) {
         return authorMapper.toAuthorResponseDTO(
                 authorRepository.save(
@@ -48,6 +54,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
+    @CachePut(value = "authors", key = "#id")
+    @CacheEvict(value = "authorsPageable", allEntries = true)
     public Optional<AuthorResponseDTO> updateAuthor(Long id, AuthorRequestDTO authorRequestDTO) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found with authorID: " + id));
@@ -60,6 +68,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
+    @CacheEvict(value = {"authors", "authorsPageable"}, allEntries = true)
     public void deleteAuthor(Long id) {
         if (!authorRepository.existsById(id)) {
             throw new ResourceNotFoundException("Author not found with authorID: " + id);
@@ -69,6 +78,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "authorsPageable", allEntries = true)
     public List<AuthorResponseDTO> createAuthors(List<AuthorRequestDTO> authorRequestDTOs) {
         var authors = authorRequestDTOs.stream()
                 .map(authorMapper::toAuthor)
