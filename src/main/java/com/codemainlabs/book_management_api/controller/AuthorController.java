@@ -1,7 +1,8 @@
 package com.codemainlabs.book_management_api.controller;
 
+import com.codemainlabs.book_management_api.assembler.AuthorAssembler;
+import com.codemainlabs.book_management_api.assembler.AuthorListResponse;
 import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.service.AuthorService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,31 +17,47 @@ import java.util.List;
 public class AuthorController {
 
     private final AuthorService authorService;
+    private final AuthorAssembler authorAssembler;
 
     @GetMapping
-    public ResponseEntity<List<AuthorResponseDTO>> getAllAuthors() {
-        return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
+    public ResponseEntity<AuthorListResponse> getAllAuthors() {
+        return ResponseEntity.ok(
+                authorAssembler.toAuthorListResponse(
+                        authorService.getAllAuthors()
+                )
+        );
     }
 
     @GetMapping("/{authorID}")
-    public ResponseEntity<AuthorResponseDTO> getAuthorById(@PathVariable Long authorID) {
-        var author = authorService.getAuthorById(authorID);
-        return author.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<?> getAuthorById(@PathVariable Long authorID) {
+        return authorService.getAuthorById(authorID)
+                .map(authorAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
     public ResponseEntity<?> createAuthor (@RequestBody List<AuthorRequestDTO> authorRequestDTOs) {
-        Object authorResponse = (authorRequestDTOs.size() == 1)
-                ? authorService.createAuthor(authorRequestDTOs.get(0))
-                : authorService.createAuthors(authorRequestDTOs);
+        if (authorRequestDTOs.size() == 1) {
+            var createdAuthor = authorService.createAuthor(authorRequestDTOs.get(0));
+            var model = authorAssembler.toModel(createdAuthor);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(model);
+        }
 
-        return new ResponseEntity<>(authorResponse, HttpStatus.CREATED);
+        var createdAuthorsList = authorService.createAuthors(authorRequestDTOs);
+        var modelList = authorAssembler.toAuthorListResponse(createdAuthorsList);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(modelList);
     }
 
     @PutMapping("/{authorID}")
-    public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable Long authorID, @RequestBody AuthorRequestDTO authorRequestDTO) {
-        var updatedAuthor = authorService.updateAuthor(authorID, authorRequestDTO);
-        return updatedAuthor.map(ResponseEntity::ok)
+    public ResponseEntity<?> updateAuthor(@PathVariable Long authorID, @RequestBody AuthorRequestDTO authorRequestDTO) {
+        return authorService.updateAuthor(authorID, authorRequestDTO)
+                .map(authorAssembler::toModel)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
