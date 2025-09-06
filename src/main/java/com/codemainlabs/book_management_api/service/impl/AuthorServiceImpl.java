@@ -10,6 +10,8 @@ import com.codemainlabs.book_management_api.service.AuthorService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +25,9 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorMapper authorMapper;
 
     @Override
-    public List<AuthorResponseDTO> getAllAuthors() {
-        return authorRepository.findAll().stream()
-                .map(authorMapper::toAuthorResponseDTO)
-                .collect(Collectors.toList());
+    public Page<AuthorResponseDTO> getAllAuthors(Pageable pageable) {
+        return authorRepository.findAll(pageable)
+                .map(authorMapper::toAuthorResponseDTO);
     }
 
     @Override

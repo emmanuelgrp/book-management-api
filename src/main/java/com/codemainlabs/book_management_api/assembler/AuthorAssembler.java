@@ -59,7 +59,7 @@ public class AuthorAssembler implements RepresentationModelAssembler<AuthorRespo
 
         return new AuthorListResponse(
                 authorEntityModels,
-                linkTo(methodOn(AuthorController.class).getAllAuthors()).withSelfRel().withType("GET"),
+                linkTo(methodOn(AuthorController.class).getAllAuthors(null)).withSelfRel().withType("GET"),
                 linkTo(methodOn(AuthorController.class).createAuthor(null)).withRel("create").withType("POST")
         );
     }

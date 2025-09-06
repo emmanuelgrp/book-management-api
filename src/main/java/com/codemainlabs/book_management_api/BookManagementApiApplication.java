@@ -1,5 +1,6 @@
 package com.codemainlabs.book_management_api;
 
+import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +14,11 @@ public class BookManagementApiApplication {
 
 	@Bean
 	public PagedResourcesAssembler<BookResponseDTO> bookPagedResourcesAssembler() {
+		return new PagedResourcesAssembler<>(new HateoasPageableHandlerMethodArgumentResolver(), null);
+	}
+
+	@Bean
+	public PagedResourcesAssembler<AuthorResponseDTO> authorPagedResourcesAssembler() {
 		return new PagedResourcesAssembler<>(new HateoasPageableHandlerMethodArgumentResolver(), null);
 	}
 }
