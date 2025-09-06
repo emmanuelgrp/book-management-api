@@ -58,7 +58,7 @@ public class BookAssembler implements RepresentationModelAssembler<BookResponseD
 
         return new BookListResponse(
                 bookEntityModels,
-                linkTo(methodOn(BookController.class).getAllBooks()).withSelfRel().withType("GET"),
+                linkTo(methodOn(BookController.class).getAllBooks(null)).withSelfRel().withType("GET"),
                 linkTo(methodOn(BookController.class).createBook(null)).withRel("create").withType("POST")
         );
     }

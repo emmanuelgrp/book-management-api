@@ -10,7 +10,8 @@ import com.codemainlabs.book_management_api.service.BookService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,10 +25,9 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public List<BookResponseDTO> getAllBooks() {
-        return bookRepository.findAll().stream()
-                .map(bookMapper::toBookResponseDTO)
-                .collect(Collectors.toList());
+    public Page<BookResponseDTO> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable)
+                .map(bookMapper::toBookResponseDTO);
     }
 
     @Override

@@ -1,14 +1,21 @@
 package com.codemainlabs.book_management_api.controller;
 
 import com.codemainlabs.book_management_api.assembler.BookAssembler;
-import com.codemainlabs.book_management_api.assembler.BookListResponse;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+
+import com.codemainlabs.book_management_api.assembler.BookRepresentation;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 
 @RestController
 @RequestMapping("/api/books")
@@ -17,13 +24,14 @@ public class BookController {
 
     private final BookService bookService;
     private final BookAssembler bookAssembler;
+    @Qualifier("bookPagedResourcesAssembler")
+    private final PagedResourcesAssembler<BookResponseDTO> pagedResourcesAssembler;
 
     @GetMapping
-    public ResponseEntity<BookListResponse> getAllBooks() {
+    public ResponseEntity<PagedModel<EntityModel<BookRepresentation>>> getAllBooks(Pageable pageable) {
+        var booksPage = bookService.getAllBooks(pageable);
         return ResponseEntity.ok(
-                bookAssembler.toBookListResponse(
-                        bookService.getAllBooks()
-                )
+                pagedResourcesAssembler.toModel(booksPage, bookAssembler)
         );
     }
 
