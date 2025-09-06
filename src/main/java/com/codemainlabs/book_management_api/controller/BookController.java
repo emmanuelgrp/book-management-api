@@ -3,12 +3,16 @@ package com.codemainlabs.book_management_api.controller;
 import com.codemainlabs.book_management_api.assembler.BookAssembler;
 import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
 import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.PageMetadata;
+import com.codemainlabs.book_management_api.model.dto.PaginatedBooksResponse;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.codemainlabs.book_management_api.assembler.BookRepresentation;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,11 +32,30 @@ public class BookController {
     private final PagedResourcesAssembler<BookResponseDTO> pagedResourcesAssembler;
 
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<BookRepresentation>>> getAllBooks(Pageable pageable) {
+    public ResponseEntity<PaginatedBooksResponse> getAllBooks(Pageable pageable) {
         var booksPage = bookService.getAllBooks(pageable);
-        return ResponseEntity.ok(
-                pagedResourcesAssembler.toModel(booksPage, bookAssembler)
+
+        // Genera temporalmente el PagedModel para obtener los links y el contenido
+        PagedModel<EntityModel<BookRepresentation>> pagedModel = pagedResourcesAssembler.toModel(booksPage, bookAssembler);
+
+        List<EntityModel<BookRepresentation>> bookEntities = pagedModel.getContent().stream().collect(Collectors.toList());
+        List<Link> links = pagedModel.getLinks().toList();
+        PagedModel.PageMetadata pageMetadata = pagedModel.getMetadata();
+
+        PageMetadata customPageMetadata = PageMetadata.builder()
+                .size(pageMetadata.getSize())
+                .totalElements(pageMetadata.getTotalElements())
+                .totalPages(pageMetadata.getTotalPages())
+                .number(pageMetadata.getNumber())
+                .build();
+
+        PaginatedBooksResponse response = new PaginatedBooksResponse(
+                bookEntities,
+                customPageMetadata,
+                links
         );
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{bookID}")
