@@ -70,9 +70,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @CacheEvict(value = {"authors", "authorsPageable"}, allEntries = true)
     public void deleteAuthor(Long id) {
-        if (!authorRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Author not found with authorID: " + id);
-        }
+        authorRepository.deleteBookAssociations(id);
         authorRepository.deleteById(id);
     }
 
