@@ -1,18 +1,17 @@
 package com.codemainlabs.book_management_api.mapper;
 
-import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
-import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorIDDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Author;
 import com.codemainlabs.book_management_api.util.serializer.NullableField; // Asegúrate que este import sea correcto
 import org.mapstruct.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 // ... otros imports ...
-import org.mapstruct.*;
+
 // ... otros imports ...
 
 /**

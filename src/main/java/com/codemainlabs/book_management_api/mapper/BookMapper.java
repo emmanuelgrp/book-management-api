@@ -1,8 +1,8 @@
 package com.codemainlabs.book_management_api.mapper;
 
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
-import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Author;
 import com.codemainlabs.book_management_api.model.entity.Book;
 import com.codemainlabs.book_management_api.repository.AuthorRepository;
@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 
 
 // ... otros imports ...
-import org.mapstruct.*;
-import org.springframework.beans.factory.annotation.Autowired;
+
 // ... otros imports ...
 
 @Mapper(componentModel = "spring",

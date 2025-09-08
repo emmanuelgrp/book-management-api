@@ -1,8 +1,8 @@
 package com.codemainlabs.book_management_api.service;
 
 
-import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

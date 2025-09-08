@@ -1,10 +1,10 @@
 package com.codemainlabs.book_management_api.controller;
 
-import com.codemainlabs.book_management_api.assembler.BookAssembler;
-import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
-import com.codemainlabs.book_management_api.model.dto.PageMetadata;
-import com.codemainlabs.book_management_api.model.dto.PaginatedBooksResponse;
+import com.codemainlabs.book_management_api.assembler.book.BookAssembler;
+import com.codemainlabs.book_management_api.model.dto.book.BookRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.pagination.PageMetadata;
+import com.codemainlabs.book_management_api.model.dto.pagination.PaginatedBooksResponse;
 import com.codemainlabs.book_management_api.service.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.Link;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.codemainlabs.book_management_api.assembler.BookRepresentation;
+import com.codemainlabs.book_management_api.assembler.book.BookRepresentation;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;

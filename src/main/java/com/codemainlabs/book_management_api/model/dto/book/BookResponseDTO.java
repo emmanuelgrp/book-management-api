@@ -1,5 +1,6 @@
-package com.codemainlabs.book_management_api.model.dto;
+package com.codemainlabs.book_management_api.model.dto.book;
 
+import com.codemainlabs.book_management_api.model.dto.author.AuthorIDDTO;
 import lombok.Builder;
 
 import java.time.LocalDate;

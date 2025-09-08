@@ -1,4 +1,4 @@
-package com.codemainlabs.book_management_api.model.dto;
+package com.codemainlabs.book_management_api.model.dto.author;
 
 import com.codemainlabs.book_management_api.util.serializer.NullableField;
 import com.fasterxml.jackson.annotation.JsonCreator;

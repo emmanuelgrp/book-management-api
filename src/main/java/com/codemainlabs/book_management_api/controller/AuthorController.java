@@ -1,12 +1,11 @@
 package com.codemainlabs.book_management_api.controller;
 
-import com.codemainlabs.book_management_api.assembler.AuthorAssembler;
-import com.codemainlabs.book_management_api.assembler.AuthorListResponse;
-import com.codemainlabs.book_management_api.assembler.AuthorRespresentation;
-import com.codemainlabs.book_management_api.model.dto.AuthorRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
-import com.codemainlabs.book_management_api.model.dto.PageMetadata;
-import com.codemainlabs.book_management_api.model.dto.PaginatedAuthorsResponse;
+import com.codemainlabs.book_management_api.assembler.author.AuthorAssembler;
+import com.codemainlabs.book_management_api.assembler.author.AuthorRespresentation;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.pagination.PageMetadata;
+import com.codemainlabs.book_management_api.model.dto.pagination.PaginatedAuthorsResponse;
 import com.codemainlabs.book_management_api.service.AuthorService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.web.PagedResourcesAssembler;

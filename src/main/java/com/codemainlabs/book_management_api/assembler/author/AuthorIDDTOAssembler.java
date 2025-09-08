@@ -1,7 +1,7 @@
-package com.codemainlabs.book_management_api.assembler;
+package com.codemainlabs.book_management_api.assembler.author;
 
 import com.codemainlabs.book_management_api.controller.AuthorController;
-import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorIDDTO;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

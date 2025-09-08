@@ -1,4 +1,4 @@
-package com.codemainlabs.book_management_api.model.dto;
+package com.codemainlabs.book_management_api.model.dto.pagination;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

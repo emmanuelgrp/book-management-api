@@ -2,8 +2,8 @@ package com.codemainlabs.book_management_api.service.impl;
 
 import com.codemainlabs.book_management_api.exception.ResourceNotFoundException;
 import com.codemainlabs.book_management_api.mapper.BookMapper;
-import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookResponseDTO;
 import com.codemainlabs.book_management_api.model.entity.Book;
 import com.codemainlabs.book_management_api.repository.BookRepository;
 import com.codemainlabs.book_management_api.service.BookService;

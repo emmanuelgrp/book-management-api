@@ -1,7 +1,7 @@
 package com.codemainlabs.book_management_api;
 
-import com.codemainlabs.book_management_api.model.dto.AuthorResponseDTO;
-import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookResponseDTO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

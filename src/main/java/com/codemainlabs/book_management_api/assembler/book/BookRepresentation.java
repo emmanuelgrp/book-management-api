@@ -1,6 +1,6 @@
-package com.codemainlabs.book_management_api.assembler;
+package com.codemainlabs.book_management_api.assembler.book;
 
-import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorIDDTO;
 import lombok.Builder;
 import org.springframework.hateoas.EntityModel;
 

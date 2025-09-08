@@ -1,7 +1,7 @@
 package com.codemainlabs.book_management_api.service;
 
-import com.codemainlabs.book_management_api.model.dto.BookRequestDTO;
-import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookRequestDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;

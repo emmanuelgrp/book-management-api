@@ -1,5 +1,6 @@
-package com.codemainlabs.book_management_api.assembler;
+package com.codemainlabs.book_management_api.assembler.author;
 
+import com.codemainlabs.book_management_api.assembler.book.BookRepresentation;
 import org.springframework.hateoas.EntityModel;
 
 import java.time.LocalDate;

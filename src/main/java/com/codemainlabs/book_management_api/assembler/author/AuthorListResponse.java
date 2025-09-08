@@ -1,4 +1,4 @@
-package com.codemainlabs.book_management_api.assembler;
+package com.codemainlabs.book_management_api.assembler.author;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

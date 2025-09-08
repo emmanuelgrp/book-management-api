@@ -1,6 +1,6 @@
-package com.codemainlabs.book_management_api.model.dto;
+package com.codemainlabs.book_management_api.model.dto.pagination;
 
-import com.codemainlabs.book_management_api.assembler.BookRepresentation;
+import com.codemainlabs.book_management_api.assembler.book.BookRepresentation;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

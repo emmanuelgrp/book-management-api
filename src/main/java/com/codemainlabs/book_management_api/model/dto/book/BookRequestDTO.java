@@ -1,6 +1,5 @@
-package com.codemainlabs.book_management_api.model.dto;
+package com.codemainlabs.book_management_api.model.dto.book;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 

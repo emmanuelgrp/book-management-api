@@ -1,7 +1,7 @@
 package com.codemainlabs.book_management_api.mapper;
 
 
-import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorIDDTO;
 import com.codemainlabs.book_management_api.model.entity.Author;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

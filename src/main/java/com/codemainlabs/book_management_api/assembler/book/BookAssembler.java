@@ -1,8 +1,9 @@
-package com.codemainlabs.book_management_api.assembler;
+package com.codemainlabs.book_management_api.assembler.book;
 
+import com.codemainlabs.book_management_api.assembler.author.AuthorIDDTOAssembler;
 import com.codemainlabs.book_management_api.controller.BookController;
-import com.codemainlabs.book_management_api.model.dto.AuthorIDDTO;
-import com.codemainlabs.book_management_api.model.dto.BookResponseDTO;
+import com.codemainlabs.book_management_api.model.dto.author.AuthorIDDTO;
+import com.codemainlabs.book_management_api.model.dto.book.BookResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
