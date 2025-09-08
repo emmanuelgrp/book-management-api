@@ -12,9 +12,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +72,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @CacheEvict(value = {"authors", "authorsPageable"}, allEntries = true)
     public void deleteAuthor(Long id) {
+        if (!authorRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found with ID: " + id);
+        }
         authorRepository.deleteBookAssociations(id);
         authorRepository.deleteById(id);
     }
