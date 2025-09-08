@@ -61,7 +61,7 @@ public class BookController {
     @GetMapping("/{bookID}")
     public ResponseEntity<?> getBookById(@PathVariable Long bookID) {
         return bookService.getBookById(bookID)
-                .map(book -> bookAssembler.toBookListResponse(List.of(book)))
+                .map(bookAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
